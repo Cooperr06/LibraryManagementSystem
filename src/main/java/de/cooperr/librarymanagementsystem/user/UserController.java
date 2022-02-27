@@ -8,32 +8,33 @@ import java.util.UUID;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping(path = "/user")
+@RequestMapping
 public class UserController {
 
     private final UserRepository repository;
 
-    @PostMapping
+    @PostMapping(path = "/user")
     public @ResponseBody
     User addNewUser(@RequestBody User user) {
         return repository.save(user);
     }
 
-    @DeleteMapping(path = "/{userId}")
+    @DeleteMapping(path = "/user")
     public @ResponseBody
-    User deleteUser(@PathVariable UUID userId) {
-        User user = repository.findById(userId).orElseThrow(() -> new IllegalStateException("Invalid User ID"));
+    User deleteUser(@RequestParam UUID userId) {
+        User user = repository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid User ID"));
+
         repository.deleteById(userId);
         return user;
     }
 
-    @GetMapping(path = "/{userId}")
+    @GetMapping(path = "/user")
     public @ResponseBody
-    User getUser(@PathVariable UUID userId) {
+    User getUser(@RequestParam UUID userId) {
         return repository.findById(userId).orElse(null);
     }
 
-    @GetMapping
+    @GetMapping(path = "/users")
     public @ResponseBody
     Iterable<User> getAllUsers() {
         return repository.findAll();

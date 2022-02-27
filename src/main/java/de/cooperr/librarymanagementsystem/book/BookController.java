@@ -8,32 +8,33 @@ import java.util.UUID;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping(path = "/book")
+@RequestMapping
 public class BookController {
 
     private final BookRepository repository;
 
-    @PostMapping
+    @PostMapping(path = "/book")
     public @ResponseBody
-    Book addNewBook(@RequestBody Book book) {
+    Book addBook(@RequestBody Book book) {
         return repository.save(book);
     }
 
-    @DeleteMapping(path = "/{bookId}")
+    @DeleteMapping(path = "/book")
     public @ResponseBody
-    Book deleteBook(@PathVariable UUID bookId) {
-        Book book = repository.findById(bookId).orElseThrow(() -> new IllegalStateException("Invalid Book ID"));
+    Book deleteBook(@RequestParam UUID bookId) {
+        Book book = repository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("Invalid Book ID"));
+
         repository.deleteById(bookId);
         return book;
     }
 
-    @GetMapping(path = "/{bookId}")
+    @GetMapping(path = "/book")
     public @ResponseBody
-    Book getBook(@PathVariable UUID bookId) {
+    Book getBook(@RequestParam UUID bookId) {
         return repository.findById(bookId).orElse(null);
     }
 
-    @GetMapping
+    @GetMapping(path = "/books")
     public @ResponseBody
     Iterable<Book> getAllBooks() {
         return repository.findAll();
